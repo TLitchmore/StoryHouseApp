@@ -16,10 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.ui.text.style.TextAlign
 import com.example.storyhouse.ui.theme.StoryHouseTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,36 +38,72 @@ class MainActivity : ComponentActivity() {
     }
 }
 @Composable
-fun StoryHouseApp(modifier: Modifier=Modifier){
-    Surface (
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.background
-    ){
-        LandingPage()
+fun StoryHouseApp(modifier: Modifier = Modifier){
+    var shouldShowStart by rememberSaveable { mutableStateOf(true) }
+
+    Surface(modifier) {
+       if(shouldShowStart){
+           LandingPage(onContinueClicked = { shouldShowStart = false})
+       } else {
+           ARScreen(modifier = Modifier.fillMaxSize())
+       }
     }
 }
 
 @Composable
-fun LandingPage(modifier: Modifier = Modifier) {
-    var shouldShowHouse by remember { mutableStateOf(true) }
-
+fun LandingPage(
+    onContinueClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
    Surface (color = MaterialTheme.colorScheme.primary) {
-       Column (modifier = modifier.padding(48.dp).fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+       Column (modifier = modifier
+           .fillMaxSize(),
+           verticalArrangement = Arrangement.Center,
+           horizontalAlignment = Alignment.CenterHorizontally
        ){
-           Text(text = "StoryHouse")
-           ElevatedButton(onClick = {shouldShowHouse = false}) {
+           Text(
+               text = "StoryHouse",
+               style = MaterialTheme.typography.headlineMedium.copy(
+                   fontWeight = FontWeight.ExtraBold
+               ),
+               modifier = Modifier.padding(bottom = 400.dp)
+           )
+           ElevatedButton(
+               onClick = onContinueClicked) {
                Text("Start")
            }
        }
    }
 }
 
+@Composable
+private fun ARScreen(
+    modifier: Modifier = Modifier
+){
+    Surface(
+        color = MaterialTheme.colorScheme.primary
+    ) {
+        Text(text = "hi", color = Color.White)
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
-fun LandingPagePreview() {
+fun ARScreenPreview(){
     StoryHouseTheme {
-        StoryHouseApp()
+        ARScreen()
+    }
+}
+@Preview(
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "StoryHouseAppPreviewDark"
+)
+@Preview (showBackground = true)
+@Composable
+fun StoryHouseAppPreview(){
+    StoryHouseTheme {
+        StoryHouseApp(Modifier.fillMaxSize())
     }
 }
