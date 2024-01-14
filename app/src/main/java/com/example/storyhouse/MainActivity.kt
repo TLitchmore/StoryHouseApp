@@ -1,5 +1,7 @@
 package com.example.storyhouse
 
+import android.content.ComponentName
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,8 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.os.Looper
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import com.example.storyhouse.ui.theme.StoryHouseTheme
+import com.google.common.util.concurrent.MoreExecutors
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +48,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun StoryHouseApp(modifier: Modifier = Modifier){
     var shouldShowStart by rememberSaveable { mutableStateOf(true) }
-
     Surface(modifier) {
        if(shouldShowStart){
            LandingPage(onContinueClicked = { shouldShowStart = false})
@@ -62,7 +69,7 @@ fun LandingPage(
            horizontalAlignment = Alignment.CenterHorizontally
        ){
            Text(
-               text = "StoryHouse",
+               text = stringResource(R.string.title_of_app),
                style = MaterialTheme.typography.headlineMedium.copy(
                    fontWeight = FontWeight.ExtraBold
                ),
@@ -70,7 +77,8 @@ fun LandingPage(
            )
            ElevatedButton(
                onClick = onContinueClicked) {
-               Text("Start")
+               Text(stringResource(R.string.start_button_text)
+               )
            }
        }
    }
@@ -81,13 +89,18 @@ private fun ARScreen(
     modifier: Modifier = Modifier
 ){
     Surface(
-        color = MaterialTheme.colorScheme.primary
+        color = Color.Black
     ) {
         Text(text = "hi", color = Color.White)
     }
 }
 
 
+@Preview(
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "ARScreenPreviewDark"
+)
 @Preview(showBackground = true)
 @Composable
 fun ARScreenPreview(){
